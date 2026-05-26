@@ -9,6 +9,7 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; }
         header { background-color: var(--card-bg); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
         h1 { margin: 0; font-size: 22px; color: var(--accent-color); text-shadow: 0 0 10px rgba(233, 69, 96, 0.3); }
+        .header-controls { display: flex; align-items: center; gap: 15px; }
         .container { padding: 30px; }
         .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         .game-card { background-color: var(--card-bg); border-radius: 12px; padding: 25px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.3); transition: 0.3s; cursor: pointer; border: 2px solid transparent; }
@@ -19,19 +20,32 @@
         .add-btn:hover { transform: scale(1.1) rotate(90deg); }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--accent-color); }
+        .modal-large { max-width: 800px; width: 95%; max-height: 80vh; overflow-y: auto; }
         input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; background: #0f3460; border: 1px solid #30475e; color: white; border-radius: 6px; box-sizing: border-box; text-align: center; }
         .file-label { display: block; background: #0f3460; padding: 12px; margin: 15px 0; border-radius: 6px; cursor: pointer; border: 1px dashed var(--accent-color); }
-        .btn-action { background: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-action { background: var(--accent-color); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-action:hover { opacity: 0.9; }
+        .btn-secondary { background: #0f3460; border: 1px solid #30475e; color: white; }
         #gameViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: none; }
         #gameViewer iframe { width: 100%; height: 100%; border: none; }
         .close-game { position: fixed; top: 20px; left: 20px; width: 45px; height: 45px; background: rgba(233, 69, 96, 0.9); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 2100; border: none; font-family: Arial; font-weight: bold; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: #0f3460; color: white; text-align: right; font-size: 14px; }
+        th, td { padding: 10px; border: 1px solid #30475e; }
+        th { background-color: var(--accent-color); color: white; }
+        tr:nth-child(even) { background-color: #16213e; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>אתר המשחקים של לובה אליאב 🕹️</h1>
-        <div id="userGreeting" style="font-weight: bold; color: var(--accent-color);"></div>
+        <div class="header-controls">
+            <button class="btn-action btn-secondary" id="btnRefresh">🔄 רענן משחקים</button>
+            <button class="btn-action" id="btnOpenLogs" style="display: none; background-color: #28a745;">📋 צפה בלוגים</button>
+            <div id="userGreeting" style="font-weight: bold; color: var(--accent-color);"></div>
+        </div>
     </header>
 
     <div class="container">
@@ -46,7 +60,7 @@
             <input type="text" id="gameNameInput" placeholder="שם המשחק...">
             <label class="file-label" id="fileLabel">📁 בחר קובץ HTML</label>
             <input type="file" id="gameFileInput" accept=".html" style="display: none;">
-            <button class="btn-action" id="btnUpload">שלח למאגר</button>
+            <button class="btn-action" id="btnUpload" style="width:100%;">שלח למאגר</button>
             <button onclick="document.getElementById('uploadModal').style.display='none'" style="background:none; border:none; color:gray; margin-top:15px; cursor:pointer;">ביטול</button>
             <div id="uploadStatus" style="margin-top:10px; font-size:13px; font-weight:bold;"></div>
         </div>
@@ -57,7 +71,30 @@
             <h2>ברוכים הבאים! 👋</h2>
             <p>איך קוראים לך?</p>
             <input type="text" id="usernameInput" placeholder="השם שלך..." autocomplete="off">
-            <button class="btn-action" id="btnSaveName">כניסה</button>
+            <button class="btn-action" id="btnSaveName" style="width:100%;">כניסה</button>
+        </div>
+    </div>
+
+    <div id="logsModal" class="modal-overlay">
+        <div class="modal-content modal-large">
+            <h2 style="color: #28a745; margin-top: 0;">📋 יומן פעילויות מערכת (Logs)</h2>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>זמן</th>
+                            <th>משתמש</th>
+                            <th>IP</th>
+                            <th>פעולה</th>
+                            <th>פירוט</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsTableBody">
+                        <tr><td colspan="5">טוען נתונים...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn-action btn-secondary" onclick="document.getElementById('logsModal').style.display='none'" style="margin-top:20px;">סגור חלון</button>
         </div>
     </div>
 
@@ -67,7 +104,7 @@
     </div>
 
     <script type="module">
-        console.log("%c🚀 Game HUB v2.6 - Logging Mode Initialized", "color: #e94560; font-weight: bold;");
+        console.log("%c🚀 Game HUB v2.7 - Admin & Refresh Mode Initialized", "color: #e94560; font-weight: bold;");
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
@@ -93,28 +130,25 @@
         const openUploadBtn = document.getElementById('openUploadModal');
         const gameViewer = document.getElementById('gameViewer');
         const gameFrame = document.getElementById('gameFrame');
+        const btnOpenLogs = document.getElementById('btnOpenLogs');
+        const logsModal = document.getElementById('logsModal');
 
         openUploadBtn.onclick = () => uploadModal.style.display = 'flex';
         
         window.onclick = (event) => {
             if (event.target == uploadModal) uploadModal.style.display = "none";
+            if (event.target == logsModal) logsModal.style.display = "none";
         };
 
-        // פונקציה אסינכרונית להבאת ה-IP של המשתמש בצורה בטוחה
         async function fetchUserIp() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
                 const data = await response.json();
                 userIpAddress = data.ip;
-                console.log("כתובת ה-IP של המשתמש אותרה:", userIpAddress);
-            } catch (err) {
-                console.error("לא ניתן היה לחלץ כתובת IP:", err);
-            }
+            } catch (err) { console.error("IP Error:", err); }
         }
-        // מריצים את ה-IP fetch מיד בטעינת הדף
         fetchUserIp();
 
-        // פונקציה גנרית לכתיבת לוגים למסד הנתונים
         async function logAction(actionName, extraData = {}) {
             try {
                 await addDoc(collection(db, "logs"), {
@@ -124,13 +158,10 @@
                     timestamp: new Date(),
                     ...extraData
                 });
-                console.log(`[LOG SAVED]: ${actionName}`);
-            } catch (err) {
-                console.error("שגיאה ברישום הלוג:", err);
-            }
+            } catch (err) { console.error("Log Error:", err); }
         }
 
-        // כניסת משתמש (תיעוד: חיבור)
+        // כניסה לאתר
         document.getElementById('btnSaveName').onclick = async () => {
             const name = document.getElementById('usernameInput').value.trim();
             if (!name) return alert("הכנס שם!");
@@ -138,9 +169,12 @@
             document.getElementById('userGreeting').innerText = `שלום, ${name} 👋`;
             document.getElementById('welcomeModal').style.display = 'none';
             
-            // רישום לוג כניסה
+            // בדיקה האם המשתמש הוא מנהל (רגרוג)
+            if (currentUserName === "רגרוג") {
+                btnOpenLogs.style.display = "block";
+            }
+
             await logAction("התחברות לאתר");
-            
             loadGames();
         };
 
@@ -154,7 +188,7 @@
             }
         };
 
-        // העלאת משחק (תיעוד: העלאת משחק + שם המשחק)
+        // העלאה
         document.getElementById('btnUpload').onclick = async () => {
             const name = document.getElementById('gameNameInput').value.trim();
             const file = fileInput.files[0];
@@ -175,7 +209,6 @@
                         createdAt: new Date()
                     });
                     
-                    // רישום לוג העלאה
                     await logAction("העלאת משחק", { details: `העלה את המשחק: ${name}` });
 
                     status.innerText = "הצלחנו! 🎉";
@@ -190,29 +223,70 @@
             } catch (err) { console.error(err); status.innerText = "שגיאה!"; }
         };
 
-        // טעינה
+        // טעינת משחקים
         async function loadGames() {
             const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = "טוען...";
-            const q = query(collection(db, "games"), orderBy("createdAt", "desc"));
-            const snap = await getDocs(q);
-            grid.innerHTML = "";
+            grid.innerHTML = "טוען משחקים... 🎮";
+            try {
+                const q = query(collection(db, "games"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+                grid.innerHTML = "";
 
-            snap.forEach(doc => {
-                const data = doc.data();
-                const card = document.createElement('div');
-                card.className = 'game-card';
-                card.innerHTML = `<span class="game-icon">${data.icon}</span><div class="game-title">${data.gameName}<br><small>מאת: ${data.uploadedBy}</small></div>`;
-                
-                // לחיצה על משחק (תיעוד: לחיצה על משחק + שם המשחק שנבחר)
-                card.onclick = async () => {
-                    await logAction("לחיצה על משחק", { details: `פתח את המשחק: ${data.gameName}` });
-                    openGame(data.gameHtml);
-                };
-                
-                grid.appendChild(card);
-            });
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+                    card.innerHTML = `<span class="game-icon">${data.icon}</span><div class="game-title">${data.gameName}<br><small>מאת: ${data.uploadedBy}</small></div>`;
+                    
+                    card.onclick = async () => {
+                        await logAction("לחיצה על משחק", { details: `פתח את המשחק: ${data.gameName}` });
+                        openGame(data.gameHtml);
+                    };
+                    grid.appendChild(card);
+                });
+            } catch (err) { grid.innerHTML = "שגיאה בטעינה."; }
         }
+
+        // טעינת לוגים (למנהל בלבד)
+        async function loadLogs() {
+            const tbody = document.getElementById('logsTableBody');
+            tbody.innerHTML = '<tr><td colspan="5">טוען יומן פעילויות... ⏳</td></tr>';
+            
+            try {
+                const q = query(collection(db, "logs"), orderBy("timestamp", "desc"));
+                const snap = await getDocs(q);
+                tbody.innerHTML = "";
+
+                if (snap.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5">אין לוגים רשומים במערכת.</td></tr>';
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.timestamp ? data.timestamp.toDate().toLocaleString('he-IL') : 'ללא תאריך';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="direction: ltr; text-align: right;">${date}</td>
+                        <td>${data.username || 'אורח'}</td>
+                        <td>${data.ip || 'Unknown'}</td>
+                        <td><b>${data.action || ''}</b></td>
+                        <td>${data.details || '-'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="5" style="color:red;">שגיאה בטעינת לוגים. ודא שחוקי ה-Firestore פתוחים.</td></tr>';
+            }
+        }
+
+        // חיבור כפתור פתיחת לוגים
+        btnOpenLogs.onclick = () => {
+            logsModal.style.display = 'flex';
+            loadLogs();
+        };
 
         function openGame(html) {
             gameViewer.style.display = 'block';
@@ -226,6 +300,9 @@
             gameFrame.src = "";
             document.body.style.overflow = 'auto';
         };
+
+        // חיבור כפתור רענון
+        document.getElementById('btnRefresh').onclick = loadGames;
 
     </script>
 </body>
