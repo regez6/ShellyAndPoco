@@ -3,74 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game HUB</title>
+    <title>אתר המשחקים של לובה אליאב</title>
     <style>
-        :root { --bg-color: #1a1a2e; --card-bg: #16213e; --accent-color: #e94560; --text-color: #ffffff; --text-secondary: #0f3460; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        header { background-color: var(--card-bg); padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        h1 { margin: 0; font-size: 24px; color: var(--accent-color); }
-        .user-greeting { font-size: 18px; font-weight: bold; }
-        .controls { display: flex; gap: 10px; }
-        button, .file-label { background-color: var(--accent-color); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: transform 0.2s, opacity 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-        button:hover, .file-label:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn-refresh { background-color: #0f3460; }
-        .container { display: flex; flex: 1; padding: 20px; gap: 20px; }
-        aside { flex: 1; max-width: 300px; background-color: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); height: fit-content; }
-        aside h2 { margin-top: 0; color: var(--accent-color); font-size: 20px; border-bottom: 2px solid var(--bg-color); padding-bottom: 10px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 14px; }
-        .form-group input[type="text"] { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #30475e; background-color: var(--bg-color); color: white; box-sizing: border-box; }
-        .file-input-wrapper { position: relative; margin-bottom: 15px; }
-        .file-input-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        main { flex: 3; }
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .game-card { background-color: var(--card-bg); border-radius: 8px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.3s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid transparent; }
-        .game-card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
-        .game-icon { font-size: 48px; margin-bottom: 15px; }
-        .game-title { font-size: 16px; font-weight: bold; word-break: break-word; }
-        #uploadStatus { margin-top: 10px; font-size: 14px; font-weight: bold; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .modal-content { background-color: var(--card-bg); padding: 40px; border-radius: 10px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); max-width: 400px; width: 90%; }
-        .modal-content h2 { color: var(--accent-color); margin-top: 0; }
-        .modal-content input { width: 100%; padding: 12px; margin: 20px 0; border-radius: 5px; border: 1px solid #30475e; background-color: var(--bg-color); color: white; font-size: 16px; box-sizing: border-box; text-align: center; }
+        :root { --bg-color: #1a1a2e; --card-bg: #16213e; --accent-color: #e94560; --text-color: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; }
+        
+        /* Header */
+        header { background-color: var(--card-bg); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        h1 { margin: 0; font-size: 22px; color: var(--accent-color); text-shadow: 0 0 10px rgba(233, 69, 96, 0.3); }
+        
+        /* Main Grid */
+        .container { padding: 30px; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .game-card { background-color: var(--card-bg); border-radius: 12px; padding: 25px; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.3); transition: 0.3s; cursor: pointer; border: 2px solid transparent; }
+        .game-card:hover { transform: translateY(-8px); border-color: var(--accent-color); box-shadow: 0 0 20px rgba(233, 69, 96, 0.4); }
+        .game-icon { font-size: 50px; margin-bottom: 15px; display: block; }
+        .game-title { font-size: 16px; font-weight: bold; line-height: 1.4; }
+
+        /* Floating Add Button */
+        .add-btn { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background-color: var(--accent-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 35px; color: white; cursor: pointer; box-shadow: 0 0 20px rgba(233, 69, 96, 0.5); z-index: 100; transition: 0.3s; border: none; }
+        .add-btn:hover { transform: scale(1.1) rotate(90deg); }
+
+        /* Modals Overlay */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--accent-color); }
+        
+        /* Inputs & Form */
+        input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; background: #0f3460; border: 1px solid #30475e; color: white; border-radius: 6px; box-sizing: border-box; text-align: center; }
+        .file-label { display: block; background: #0f3460; padding: 12px; margin: 15px 0; border-radius: 6px; cursor: pointer; border: 1px dashed var(--accent-color); }
+        .btn-action { background: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        
+        /* Iframe Game Viewer */
+        #gameViewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: none; }
+        #gameViewer iframe { width: 100%; height: 100%; border: none; }
+        .close-game { position: fixed; top: 20px; left: 20px; width: 45px; height: 45px; background: rgba(233, 69, 96, 0.9); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 2100; border: none; font-family: Arial; font-weight: bold; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-    <div id="welcomeModal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>ברוכים הבאים ל-Game HUB! 🕹️</h2>
-            <p>אנא הכנס את שמך כדי להמשיך ללוח המשחקים:</p>
-            <input type="text" id="usernameInput" placeholder="השם שלך..." autocomplete="off">
-            <button id="btnSaveName">כניסה לאתר</button>
-        </div>
-    </div>
-
     <header>
-        <h1>Game HUB 🎮</h1>
-        <div class="user-greeting" id="userGreeting">שלום, אורח</div>
-        <div class="controls"><button class="btn-refresh" id="btnRefresh">🔄 סנכרן ורענן</button></div>
+        <h1>אתר המשחקים של לובה אליאב 🕹️</h1>
+        <div id="userGreeting" style="font-weight: bold; color: var(--accent-color);"></div>
     </header>
 
     <div class="container">
-        <aside>
-            <h2>העלאת משחק חדש</h2>
-            <div class="form-group">
-                <label for="gameNameInput">שם המשחק:</label>
-                <input type="text" id="gameNameInput" placeholder="לדוגמה: סנייק בחלל">
-            </div>
-            <div class="file-input-wrapper">
-                <label class="file-label" id="fileLabel">📁 בחר קובץ HTML</label>
-                <input type="file" id="gameFileInput" accept=".html">
-            </div>
-            <button id="btnUpload" style="width: 100%;">להעלות משחק 🚀</button>
-            <div id="uploadStatus"></div>
-        </aside>
-        <main><div class="games-grid" id="gamesGrid"></div></main>
+        <div class="games-grid" id="gamesGrid"></div>
+    </div>
+
+    <button class="add-btn" id="openUploadModal" title="העלאת משחק חדש">+</button>
+
+    <div id="uploadModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="color: var(--accent-color); margin-top: 0;">העלאת משחק חדש 🚀</h2>
+            <input type="text" id="gameNameInput" placeholder="שם המשחק...">
+            <label class="file-label" id="fileLabel">📁 בחר קובץ HTML</label>
+            <input type="file" id="gameFileInput" accept=".html" style="display: none;">
+            <button class="btn-action" id="btnUpload">שלח למאגר</button>
+            <button onclick="document.getElementById('uploadModal').style.display='none'" style="background:none; border:none; color:gray; margin-top:15px; cursor:pointer;">ביטול</button>
+            <div id="uploadStatus" style="margin-top:10px; font-size:13px; font-weight:bold;"></div>
+        </div>
+    </div>
+
+    <div id="welcomeModal" class="modal-overlay" style="display: flex;">
+        <div class="modal-content">
+            <h2>ברוכים הבאים! 👋</h2>
+            <p>איך קוראים לך?</p>
+            <input type="text" id="usernameInput" placeholder="השם שלך..." autocomplete="off">
+            <button class="btn-action" id="btnSaveName">כניסה</button>
+        </div>
+    </div>
+
+    <div id="gameViewer">
+        <button class="close-game" onclick="closeGame()">X</button>
+        <iframe id="gameFrame" src=""></iframe>
     </div>
 
     <script type="module">
-        console.log("%c⚙️ הגרסה החדשה נטענה: v2.1 עם לוגים מורחבים", "color: #ff9f43; font-size: 14px; font-weight: bold;");
+        console.log("%c🚀 Game HUB v2.5 - Iframe & Modal Mode Initialized", "color: #e94560; font-weight: bold;");
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
@@ -85,148 +94,109 @@
             measurementId: "G-CW3FDZCGFZ"
         };
 
-        console.log("מאתחל את Firebase...");
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        console.log("Firebase Database (Firestore) אותחל בהצלחה.");
 
         let currentUserName = "";
-        const gameIcons = ["🕹️", "🎮", "🎲", "👾", "🎯", "🧩", "🚀", "⚔️", "🏆", "🏃", "👑", "🏴‍☠️"];
+        const gameIcons = ["🕹️", "🎮", "🎲", "👾", "🎯", "🚀", "⚔️", "🏆", "🏃", "👑"];
 
-        const welcomeModal = document.getElementById('welcomeModal');
-        const usernameInput = document.getElementById('usernameInput');
-        const btnSaveName = document.getElementById('btnSaveName');
-        const userGreeting = document.getElementById('userGreeting');
-        const gamesGrid = document.getElementById('gamesGrid');
-        const gameNameInput = document.getElementById('gameNameInput');
-        const gameFileInput = document.getElementById('gameFileInput');
-        const fileLabel = document.getElementById('fileLabel');
-        const btnUpload = document.getElementById('btnUpload');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const btnRefresh = document.getElementById('btnRefresh');
+        // ניהול מודאלים
+        const uploadModal = document.getElementById('uploadModal');
+        const openUploadBtn = document.getElementById('openUploadModal');
+        const gameViewer = document.getElementById('gameViewer');
+        const gameFrame = document.getElementById('gameFrame');
 
-        btnSaveName.addEventListener('click', () => {
-            const name = usernameInput.value.trim();
-            if (name === "") { alert("בבקשה תרשום שם!"); return; }
-            currentUserName = name;
-            userGreeting.textContent = `שלום, ${currentUserName} 👋`;
-            welcomeModal.style.display = 'none';
-            console.log(`משתמש התחבר: ${currentUserName}. מתחיל לטעון משחקים...`);
-            loadGames();
-        });
-
-        gameFileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                console.log(`קובץ נבחר בדפדפן: ${e.target.files[0].name} (${e.target.files[0].size} bytes)`);
-                fileLabel.textContent = `נבחר: ${e.target.files[0].name}`;
-                fileLabel.style.backgroundColor = "#28a745";
-            }
-        });
-
-        const readFileAsText = (file) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    console.log("קריאת הקובץ כטקסט הסתיימה בהצלחה.");
-                    resolve(event.target.result);
-                };
-                reader.onerror = (error) => {
-                    console.error("שגיאה בקריאת הקובץ:", error);
-                    reject(error);
-                };
-                reader.readAsText(file);
-            });
+        openUploadBtn.onclick = () => uploadModal.style.display = 'flex';
+        
+        // סגירת מודאל בלחיצה בחוץ
+        window.onclick = (event) => {
+            if (event.target == uploadModal) uploadModal.style.display = "none";
         };
 
-        btnUpload.addEventListener('click', async () => {
-            const gameName = gameNameInput.value.trim();
-            const file = gameFileInput.files[0];
+        // כניסת משתמש
+        document.getElementById('btnSaveName').onclick = () => {
+            const name = document.getElementById('usernameInput').value.trim();
+            if (!name) return alert("הכנס שם!");
+            currentUserName = name;
+            document.getElementById('userGreeting').innerText = `שלום, ${name} 👋`;
+            document.getElementById('welcomeModal').style.display = 'none';
+            loadGames();
+        };
 
-            console.log(`לחיצה על כפתור העלאה. שם משחק: "${gameName}", קובץ קיים: ${!!file}`);
-
-            if (!gameName || !file) { alert("חובה להזין שם משחק ולבחור קובץ HTML!"); return; }
-
-            try {
-                btnUpload.disabled = true;
-                uploadStatus.style.color = "orange";
-                uploadStatus.textContent = "מעבד את קוד המשחק... ⏳";
-
-                const gameCode = await readFileAsText(file);
-                
-                uploadStatus.textContent = "שומר בשרת... 🚀";
-                console.log("%cמנסה לשלוח פקודת addDoc ל-Firestore...", "color: #00cfe8;");
-
-                const randomIcon = gameIcons[Math.floor(Math.random() * gameIcons.length)];
-
-                // שליחת המידע
-                const docRef = await addDoc(collection(db, "games"), {
-                    gameName: gameName,
-                    uploadedBy: currentUserName,
-                    gameHtml: gameCode, 
-                    icon: randomIcon,
-                    createdAt: new Date()
-                });
-
-                console.log(`%cהצלחה! המשחק נשמר ב-Firestore עם מזהה: ${docRef.id}`, "color: #28a745; font-weight: bold;");
-                uploadStatus.style.color = "#28a745";
-                uploadStatus.textContent = "המשחק הועלה בהצלחה! 🎉";
-                
-                gameNameInput.value = ""; gameFileInput.value = "";
-                fileLabel.textContent = "📁 בחר קובץ HTML";
-                fileLabel.style.backgroundColor = "var(--accent-color)";
-                loadGames();
-
-            } catch (error) {
-                console.error("%cשגיאה חמורה בזמן השמירה בשרת המאגר:", "color: #ea5455; font-size: 14px; font-weight: bold;", error);
-                uploadStatus.style.color = "#dc3545";
-                uploadStatus.textContent = "תקלה בהעלאה. בדוק את השגיאה בקונסול (F12).";
-            } finally {
-                btnUpload.disabled = false;
+        // בחירת קובץ
+        const fileInput = document.getElementById('gameFileInput');
+        const fileLabel = document.getElementById('fileLabel');
+        fileLabel.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => {
+            if (e.target.files.length > 0) {
+                fileLabel.innerText = `נבחר: ${e.target.files[0].name}`;
+                fileLabel.style.borderColor = "#28a745";
             }
-        });
+        };
 
-        async function loadGames() {
-            gamesGrid.innerHTML = "<p>טוען משחקים... תתכונן לשחק 🎮</p>";
-            console.log("קורא את רשימת המשחקים מ-Firestore...");
+        // העלאה
+        document.getElementById('btnUpload').onclick = async () => {
+            const name = document.getElementById('gameNameInput').value.trim();
+            const file = fileInput.files[0];
+            const status = document.getElementById('uploadStatus');
+
+            if (!name || !file) return alert("מלא את כל הפרטים!");
+
             try {
-                const q = query(collection(db, "games"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-                gamesGrid.innerHTML = "";
-
-                console.log(`נמצאו ${querySnapshot.size} משחקים במאגר.`);
-
-                if (querySnapshot.empty) {
-                    gamesGrid.innerHTML = "<p>אין עדיין משחקים ב-HUB. תהיה הראשון להעלות! 🚀</p>";
-                    return;
-                }
-
-                querySnapshot.forEach((doc) => {
-                    const gameData = doc.data();
-                    const gameCard = document.createElement('div');
-                    gameCard.className = 'game-card';
-                    
-                    gameCard.addEventListener('click', () => {
-                        console.log(`פתיחת משחק: ${gameData.gameName}`);
-                        const newWindow = window.open();
-                        if (newWindow) {
-                            newWindow.document.open();
-                            newWindow.document.write(gameData.gameHtml);
-                            newWindow.document.close();
-                        } else {
-                            alert("אנא אפשר חלונות קופצים (Popups) בדפדפן!");
-                        }
+                status.innerText = "מעלה משחק... ⏳";
+                const reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = async (e) => {
+                    await addDoc(collection(db, "games"), {
+                        gameName: name,
+                        uploadedBy: currentUserName,
+                        gameHtml: e.target.result,
+                        icon: gameIcons[Math.floor(Math.random() * gameIcons.length)],
+                        createdAt: new Date()
                     });
+                    status.innerText = "הצלחנו! 🎉";
+                    setTimeout(() => { 
+                        uploadModal.style.display = 'none'; 
+                        status.innerText = "";
+                        document.getElementById('gameNameInput').value = "";
+                        fileLabel.innerText = "📁 בחר קובץ HTML";
+                    }, 1500);
+                    loadGames();
+                };
+            } catch (err) { console.error(err); status.innerText = "שגיאה!"; }
+        };
 
-                    gameCard.innerHTML = `<div class="game-icon">${gameData.icon}</div><div class="game-title">${gameData.uploadedBy} - ${gameData.gameName}</div>`;
-                    gamesGrid.appendChild(gameCard);
-                });
-            } catch (error) {
-                console.error("שגיאה בטעינת משחקים מהמאגר:", error);
-                gamesGrid.innerHTML = "<p style='color:#dc3545;'>שגיאה בטעינת המשחקים. ודא שהמאגר פתוח לקריאה.</p>";
-            }
+        // טעינה
+        async function loadGames() {
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = "טוען...";
+            const q = query(collection(db, "games"), orderBy("createdAt", "desc"));
+            const snap = await getDocs(q);
+            grid.innerHTML = "";
+
+            snap.forEach(doc => {
+                const data = doc.data();
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `<span class="game-icon">${data.icon}</span><div class="game-title">${data.gameName}<br><small>מאת: ${data.uploadedBy}</small></div>`;
+                card.onclick = () => openGame(data.gameHtml);
+                grid.appendChild(card);
+            });
         }
 
-        btnRefresh.addEventListener('click', loadGames);
+        function openGame(html) {
+            gameViewer.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // מונע גלילה של האתר ברקע
+            const blob = new Blob([html], { type: 'text/html' });
+            gameFrame.src = URL.createObjectURL(blob);
+        }
+
+        window.closeGame = function() {
+            gameViewer.style.display = 'none';
+            gameFrame.src = "";
+            document.body.style.overflow = 'auto';
+        };
+
     </script>
 </body>
 </html>
